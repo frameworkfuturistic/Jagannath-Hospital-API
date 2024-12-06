@@ -32,12 +32,35 @@ const app = express();
 app.use(helmet());
 
 // Enable CORS
+const allowedOrigins = [
+  'https://sjhrc.in',
+  'https://appointment.sjhrc.in',
+  'https://jagannathparamedicals.com'
+];
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000', // Make this dynamic for production
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true, // Use this if your frontend sends cookies or HTTP credentials with requests
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Restrict to allowed HTTP methods
+  allowedHeaders: ['Content-Type', 'Authorization'], // Restrict to required headers
+  credentials: true, // Allow cookies and HTTP authentication
+  optionsSuccessStatus: 200, // Ensure successful response for OPTIONS
+  maxAge: 86400 // Cache preflight response for 1 day
 }));
+
+// Handle invalid CORS origin errors securely
+app.use((err, req, res, next) => {
+  if (err.message === 'Not allowed by CORS') {
+    return res.status(403).json({ error: 'CORS error: Access denied' });
+  }
+  next(err);
+});
+
 
 // Log HTTP requests in development mode
 if (process.env.NODE_ENV === 'development') {
