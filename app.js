@@ -31,12 +31,11 @@ const app = express();
 // Set security HTTP headers with Helmet
 app.use(helmet());
 
-// Enable CORS
+// CORS configuration
 const allowedOrigins = [
-  'https://sjhrc.in',
-  'https://appointment.sjhrc.in',
-  'https://jagannathparamedicals.com',
-  'http://localhost:3000'
+  'https://sjhrc.in', // Production domain 1
+  'https://appointment.sjhrc.in', // Production domain 2
+  'http://localhost:3000', // Local development domain
 ];
 
 app.use(cors({
