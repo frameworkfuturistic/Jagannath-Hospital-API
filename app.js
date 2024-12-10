@@ -35,7 +35,8 @@ app.use(helmet());
 const allowedOrigins = [
   'https://sjhrc.in',
   'https://appointment.sjhrc.in',
-  'https://jagannathparamedicals.com'
+  'https://jagannathparamedicals.com',
+  'http://localhost:3000'
 ];
 
 app.use(cors({
