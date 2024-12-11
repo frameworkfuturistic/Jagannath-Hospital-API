@@ -36,7 +36,7 @@ const allowedOrigins = [
   'https://sjhrc.in', // Production domain 1
   'https://appointment.sjhrc.in', // Production domain 2
   'http://localhost:3000', // Local development domain
-  'https://test-hospital-website.vercel.app'
+  'https://testsjhrc.vercel.app'
 ];
 
 app.use(cors({
