@@ -93,9 +93,9 @@ app.use(session({
 
 // ROUTES
 
-app.use('/uploads/blogs', express.static(path.join(__dirname, 'uploads/blogs')));
-app.use('/uploads/gallery', express.static(path.join(__dirname, 'uploads/gallery')));
-app.use('/uploads/resume', express.static(path.join(__dirname, 'uploads/resume')));
+app.use('/gallery', express.static(path.join(__dirname, 'uploads')));
+app.use('/blogs', express.static(path.join(__dirname, 'uploads')));
+app.use('/resume', express.static(path.join(__dirname, 'uploads')));
 
 
 app.get('/', (req, res) => {
