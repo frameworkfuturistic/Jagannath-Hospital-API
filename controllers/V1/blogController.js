@@ -1,4 +1,6 @@
 const blogService = require('../../services/blogService');
+const { getFullUrl  } = require('../../helpers/urlHelper');
+
 
 // Test endpoint
 exports.test = async (req, res) => {
@@ -15,7 +17,7 @@ exports.createBlog = async (req, res) => {
       category: req.body.category,
       status: req.body.status || 'draft',
       tags: req.body.tags ? JSON.parse(req.body.tags) : [],
-      image: req.file ? req.file.path.replace(/\\/g, '/') : null,
+      image: req.file ? getFullUrl(req, req.file.path) : null,
       publishDate: req.body.publishDate || new Date(),
     };
 
@@ -36,10 +38,16 @@ exports.getBlogs = async (req, res) => {
 
     const { total, blogs } = await blogService.getBlogs(query, parseInt(page, 10), parseInt(limit, 10));
 
+      // Add full URLs to images
+      const blogsWithFullUrls = blogs.map(blog => ({
+        ...blog,
+        image: getFullUrl(req, blog.image),
+      }));
+
     res.status(200).json({
       success: true,
       data: {
-        blogs,
+        blogs: blogsWithFullUrls,
         total,
         page: parseInt(page, 10),
         pages: Math.ceil(total / limit),
@@ -90,7 +98,7 @@ exports.updateBlog = async (req, res) => {
     };
 
     if (req.file) {
-      blogData.image = req.file.path.replace(/\\/g, '/');
+      blogData.image = getFullUrl(req, req.file.path);
     }
 
     const blog = await blogService.updateBlog(req.params.id, blogData);
