@@ -3,15 +3,18 @@ exports.getFullUrl = (req, relativePath) => {
       return null;
     }
   
-    const protocol = req.protocol || 'http'; // Default to 'http' if undefined
-    const host = req.get('host') || 'localhost'; // Default to 'localhost' if undefined
+    // Force the protocol to 'https' as we're assuming production.
+    const protocol = 'https'; 
   
-    // Ensure the domain is correct
+    // Default to 'localhost' for development or fallback.
+    let host = req.get('host') || 'localhost';
+  
+    // If the host is '192.168.1.251', replace it with 'sjhrc.in'.
     if (host.includes("192.168.1.251")) {
-      // If it's the IP address, replace with the domain
-      host = 'sjhrc.in';  // Ensure this is set to your production domain
+      host = 'sjhrc.in';  // Ensure this is your production domain.
     }
   
-    return `${protocol}://${host}/${relativePath.replace(/\\/g, '/')}`;
+    // Construct the full URL by appending the relativePath.
+    return `${protocol}://${host}/hospital-api/${relativePath.replace(/\\/g, '/')}`;
   };
   
