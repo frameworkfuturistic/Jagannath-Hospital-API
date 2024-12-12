@@ -1,18 +1,7 @@
 const express = require('express');
-const multer = require('multer');
 const galleryController = require('../../controllers/V1/galleryController');
+const upload = require('../../middlewares/multer');
 
-// Set up multer for file uploads
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'uploads/gallery'); // Set the destination folder for uploaded files
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + '-' + file.originalname); // Use a timestamp to avoid name conflicts
-    }
-});
-
-const upload = multer({ storage: storage });
 
 const router = express.Router();
 

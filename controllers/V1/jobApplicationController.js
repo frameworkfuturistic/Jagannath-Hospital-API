@@ -1,4 +1,5 @@
 const jobApplicationService = require('../../services/jobApplicationService');
+const { getFullUrl  } = require('../../helpers/urlHelper');
 
 // Utility function to handle responses
 const sendResponse = (res, statusCode, data, message) => {
@@ -18,7 +19,7 @@ const createJobApplication = async (req, res) => {
             return sendResponse(res, 400, null, "Resume file is required.");
         }
 
-        const resume = req.file.path; // Get the path of the uploaded file
+        const resume = req.file ? getFullUrl(req, req.file.path) : null; // Get the path of the uploaded file
 
         const jobApplication = await jobApplicationService.createJobApplication({
             jobId,

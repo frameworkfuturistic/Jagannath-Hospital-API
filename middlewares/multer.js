@@ -1,15 +1,20 @@
 const multer = require('multer');
 const path = require('path');
 
-// Set storage engine
+// Set storage engine dynamically based on folder
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/blogs'); // Set destination folder to 'uploads/blogs'
+    let folder = 'uploads';
+    if (req.baseUrl.includes('/blogs')) folder = 'uploads/blogs';
+    else if (req.baseUrl.includes('/gallery')) folder = 'uploads/gallery';
+    else if (req.baseUrl.includes('/resume')) folder = 'uploads/resume';
+
+    cb(null, folder);
   },
   filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + path.extname(file.originalname)); // Generate unique file name with extension
-  }
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  },
 });
 
 // Initialize upload

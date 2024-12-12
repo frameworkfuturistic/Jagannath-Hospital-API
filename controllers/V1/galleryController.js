@@ -1,4 +1,5 @@
 const galleryService = require('../../services/galleryService');
+const { getFullUrl  } = require('../../helpers/urlHelper');
 
 // Test endpoint
 exports.test = async (req, res) => {
@@ -15,7 +16,7 @@ exports.createGalleryImage = async (req, res) => {
         const galleryImage = await galleryService.createGalleryImage({
             title: req.body.title,
             description: req.body.description,
-            imageUrl: req.file.path, // Store the file path
+            imageUrl: req.file ? getFullUrl(req, req.file.path) : null, // Store the file path
             createdBy: req.body.createdBy
         });
 
