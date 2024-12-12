@@ -31,28 +31,30 @@ const app = express();
 // Set security HTTP headers with Helmet
 app.use(helmet());
 
-// CORS configuration
-const allowedOrigins = [
-  'https://sjhrc.in', // Production domain 1
-  'https://appointment.sjhrc.in', // Production domain 2
-  'http://localhost:3000', // Local development domain
-  'https://testsjhrc.vercel.app'
-];
+app.use(cors());
 
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Restrict to allowed HTTP methods
-  allowedHeaders: ['Content-Type', 'Authorization'], // Restrict to required headers
-  credentials: true, // Allow cookies and HTTP authentication
-  optionsSuccessStatus: 200, // Ensure successful response for OPTIONS
-  maxAge: 86400 // Cache preflight response for 1 day
-}));
+// CORS configuration
+// const allowedOrigins = [
+//   'https://sjhrc.in', // Production domain 1
+//   'https://appointment.sjhrc.in', // Production domain 2
+//   'http://localhost:3000', // Local development domain
+//   'https://testsjhrc.vercel.app'
+// ];
+
+// app.use(cors({
+//   origin: (origin, callback) => {
+//     if (!origin || allowedOrigins.includes(origin)) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error('Not allowed by CORS'));
+//     }
+//   },
+//   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Restrict to allowed HTTP methods
+//   allowedHeaders: ['Content-Type', 'Authorization'], // Restrict to required headers
+//   credentials: true, // Allow cookies and HTTP authentication
+//   optionsSuccessStatus: 200, // Ensure successful response for OPTIONS
+//   maxAge: 86400 // Cache preflight response for 1 day
+// }));
 
 // Handle invalid CORS origin errors securely
 app.use((err, req, res, next) => {
@@ -62,18 +64,18 @@ app.use((err, req, res, next) => {
   next(err);
 });
 
-
+app.set('trust proxy', true)
 // Log HTTP requests in development mode
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
 // Rate limiting to prevent DDOS attacks
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-});
-app.use('/api', limiter);
+// const limiter = rateLimit({
+//   windowMs: 15 * 60 * 1000, // 15 minutes
+//   max: 100, // limit each IP to 100 requests per windowMs
+// });
+// app.use('/api', limiter);
 
 // Compress responses for improved performance
 app.use(compression());
