@@ -3,13 +3,15 @@ exports.getFullUrl = (req, relativePath) => {
       return null;
     }
   
-    // Ensure the path doesn't have a leading slash (to avoid double slashes)
-    const cleanPath = relativePath.startsWith('/') ? relativePath.slice(1) : relativePath;
+    const protocol = req.protocol || 'http'; // Default to 'http' if undefined
+    const host = req.get('host') || 'localhost'; // Default to 'localhost' if undefined
   
-    // Enforce https in production environment, fallback to localhost in dev.
-    const baseUrl = process.env.BASE_URL || `http://${req.get('host')}`;
+    // Ensure the domain is correct
+    if (host.includes("192.168.1.251")) {
+      // If it's the IP address, replace with the domain
+      host = 'sjhrc.in';  // Ensure this is set to your production domain
+    }
   
-    // Return the full URL (it will always be HTTPS in production)
-    return `${baseUrl}/${cleanPath.replace(/\\/g, '/')}`;
+    return `${protocol}://${host}/${relativePath.replace(/\\/g, '/')}`;
   };
   
