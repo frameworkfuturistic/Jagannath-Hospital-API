@@ -64,7 +64,7 @@ app.use((err, req, res, next) => {
   next(err);
 });
 
-app.set('trust proxy', true)
+app.set('trust proxy', true);
 // Log HTTP requests in development mode
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
@@ -86,18 +86,29 @@ app.use(xss());
 // Body parser for parsing JSON requests
 app.use(express.json());
 app.use(cookieParser());
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-  cookie: { secure: false } // Set 'true' if using https
-}));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false }, // Set 'true' if using https
+  })
+);
 
 // ROUTES
 
-app.use('/uploads/blogs', express.static(path.join(__dirname, 'uploads/blogs')));
-app.use('/uploads/gallery', express.static(path.join(__dirname, 'uploads/gallery')));
-app.use('/uploads/resume', express.static(path.join(__dirname, 'uploads/resume')));
+app.use(
+  '/uploads/blogs',
+  express.static(path.join(__dirname, 'uploads/blogs'))
+);
+app.use(
+  '/uploads/gallery',
+  express.static(path.join(__dirname, 'uploads/gallery'))
+);
+app.use(
+  '/uploads/resume',
+  express.static(path.join(__dirname, 'uploads/resume'))
+);
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
@@ -108,7 +119,7 @@ app.use('/api/auth', authRoutes);
 // Blog routes
 app.use('/api/blogs', blogRoutes);
 
-// gallery Routes 
+// gallery Routes
 app.use('/api/announcement', announcementRoutes);
 
 // Notice routes

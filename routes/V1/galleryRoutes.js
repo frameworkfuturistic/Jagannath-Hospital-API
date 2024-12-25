@@ -1,7 +1,6 @@
 const express = require('express');
 const galleryController = require('../../controllers/V1/galleryController');
-const upload = require('../../middlewares/multer');
-
+const { galleryUpload } = require('../../middlewares/upload');
 
 const router = express.Router();
 
@@ -9,7 +8,11 @@ const router = express.Router();
 router.get('/test', galleryController.test);
 
 // Create a new gallery image
-router.post('/', upload.single('image'), galleryController.createGalleryImage); // Use multer middleware for file uploads
+router.post(
+  '/',
+  galleryUpload.single('image'),
+  galleryController.createGalleryImage
+); // Use multer middleware for file uploads
 
 // Get all gallery images (with pagination)
 router.get('/', galleryController.getGalleryImages);
@@ -18,7 +21,11 @@ router.get('/', galleryController.getGalleryImages);
 router.get('/:identifier', galleryController.getGalleryImageById);
 
 // Update a gallery image by ID
-router.put('/:id', upload.single('image'), galleryController.updateGalleryImage); // Use multer middleware for file uploads
+router.put(
+  '/:id',
+  galleryUpload.single('image'),
+  galleryController.updateGalleryImage
+); // Use multer middleware for file uploads
 
 // Delete a gallery image by ID
 router.delete('/:id', galleryController.deleteGalleryImage);

@@ -1,5 +1,6 @@
 const express = require('express');
 const announcementController = require('../../controllers/V1/announcementController');
+const { announcementUpload } = require('../../middlewares/upload');
 
 const router = express.Router();
 
@@ -7,7 +8,11 @@ const router = express.Router();
 router.get('/test', announcementController.test);
 
 // Create a new announcement
-router.post('/', announcementController.createAnnouncement);
+router.post(
+  '/',
+  announcementUpload.single('image'),
+  announcementController.createAnnouncement
+);
 
 // Get all announcements (with pagination and optional type filtering)
 router.get('/', announcementController.getAnnouncements);
@@ -16,7 +21,11 @@ router.get('/', announcementController.getAnnouncements);
 router.get('/:identifier', announcementController.getAnnouncementById); // identifier can be ID or slug
 
 // Update an announcement by ID
-router.put('/:id', announcementController.updateAnnouncement);
+router.put(
+  '/:id',
+  announcementUpload.single('image'),
+  announcementController.updateAnnouncement
+);
 
 // Delete an announcement by ID
 router.delete('/:id', announcementController.deleteAnnouncement);

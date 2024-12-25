@@ -1,6 +1,6 @@
 const express = require('express');
 const blogController = require('../../controllers/V1/blogController');
-const upload = require('../../middlewares/multer');
+const { blogUpload } = require('../../middlewares/upload');
 
 const router = express.Router();
 
@@ -11,8 +11,8 @@ router.get('/:id', blogController.getBlogById);
 router.get('/slug/:slug', blogController.getBlogBySlug);
 
 // Admin-only routes (you should add authentication middleware here)
-router.post('/', upload.single('image'), blogController.createBlog);
-router.put('/:id', upload.single('image'), blogController.updateBlog);
+router.post('/', blogUpload.single('image'), blogController.createBlog);
+router.put('/:id', blogUpload.single('image'), blogController.updateBlog);
 router.delete('/:id', blogController.deleteBlog);
 
 module.exports = router;

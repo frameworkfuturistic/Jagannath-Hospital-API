@@ -1,6 +1,5 @@
 const blogService = require('../../services/blogService');
-const { getFullUrl  } = require('../../helpers/urlHelper');
-
+const cloudinary = require('../../config/cloudinary');
 
 // Test endpoint
 exports.test = async (req, res) => {
@@ -10,6 +9,19 @@ exports.test = async (req, res) => {
 // Create a new blog post
 exports.createBlog = async (req, res) => {
   try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: 'Image file is required.',
+      });
+    }
+
+    // Upload the image to Cloudinary
+    const { path } = req.file;
+    const result = await cloudinary.uploader.upload(path, {
+      folder: 'blogs',
+    });
+
     const blogData = {
       title: req.body.title,
       content: req.body.content,
@@ -17,7 +29,8 @@ exports.createBlog = async (req, res) => {
       category: req.body.category,
       status: req.body.status || 'draft',
       tags: req.body.tags ? JSON.parse(req.body.tags) : [],
-      image: req.file ? getFullUrl(req, req.file.path) : null,
+      blogImageUrl: result.secure_url,
+      blogImageId: result.public_id,
       publishDate: req.body.publishDate || new Date(),
     };
 
@@ -36,12 +49,16 @@ exports.getBlogs = async (req, res) => {
     if (category) query.category = category;
     if (status) query.status = status;
 
-    const { total, blogs } = await blogService.getBlogs(query, parseInt(page, 10), parseInt(limit, 10));
+    const { total, blogs } = await blogService.getBlogs(
+      query,
+      parseInt(page, 10),
+      parseInt(limit, 10)
+    );
 
-      // Add full URLs to images
-      const blogsWithFullUrls = blogs.map(blog => ({
-        ...blog,
-      }));
+    // Add full URLs to images
+    const blogsWithFullUrls = blogs.map((blog) => ({
+      ...blog,
+    }));
 
     res.status(200).json({
       success: true,
@@ -62,7 +79,9 @@ exports.getBlogById = async (req, res) => {
   try {
     const blog = await blogService.getBlogById(req.params.id);
     if (!blog) {
-      return res.status(404).json({ success: false, message: 'Blog not found' });
+      return res
+        .status(404)
+        .json({ success: false, message: 'Blog not found' });
     }
     res.status(200).json({ success: true, data: blog });
   } catch (error) {
@@ -75,7 +94,9 @@ exports.getBlogBySlug = async (req, res) => {
   try {
     const blog = await blogService.getBlogBySlug(req.params.slug);
     if (!blog) {
-      return res.status(404).json({ success: false, message: 'Blog not found' });
+      return res
+        .status(404)
+        .json({ success: false, message: 'Blog not found' });
     }
     res.status(200).json({ success: true, data: blog });
   } catch (error) {
@@ -102,7 +123,9 @@ exports.updateBlog = async (req, res) => {
 
     const blog = await blogService.updateBlog(req.params.id, blogData);
     if (!blog) {
-      return res.status(404).json({ success: false, message: 'Blog not found' });
+      return res
+        .status(404)
+        .json({ success: false, message: 'Blog not found' });
     }
     res.status(200).json({ success: true, data: blog });
   } catch (error) {
@@ -115,9 +138,13 @@ exports.deleteBlog = async (req, res) => {
   try {
     const blog = await blogService.deleteBlog(req.params.id);
     if (!blog) {
-      return res.status(404).json({ success: false, message: 'Blog not found' });
+      return res
+        .status(404)
+        .json({ success: false, message: 'Blog not found' });
     }
-    res.status(200).json({ success: true, message: 'Blog deleted successfully' });
+    res
+      .status(200)
+      .json({ success: true, message: 'Blog deleted successfully' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
