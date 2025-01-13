@@ -1,5 +1,13 @@
 const bcrypt = require('bcryptjs');
 
-const superPassword = 'your_super_password'; // e.g., 'SuperSecret!'
-const hashedSuperPassword = bcrypt.hashSync(superPassword, 10);
-console.log(hashedSuperPassword); // Use this to set SUPER_PASSWORD_HASH in .env
+const superPassword = 'Prayag#@123'; // Your super password
+const saltRounds = 10; // Number of salt rounds for hashing
+
+// Hash the super password
+bcrypt.hash(superPassword, saltRounds, (err, hash) => {
+  if (err) {
+    console.error('Error hashing super password:', err);
+  } else {
+    console.log('Hashed Super Password:', hash);
+  }
+});
