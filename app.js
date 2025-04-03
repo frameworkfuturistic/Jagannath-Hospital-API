@@ -9,14 +9,7 @@ const compression = require('compression');
 const xss = require('xss-clean');
 const rateLimit = require('express-rate-limit');
 const connectDB = require('./config/db');
-const authRoutes = require('./routes/V1/authRoutes');
-const blogRoutes = require('./routes/V1/blogRoutes');
-const announcementRoutes = require('./routes/V1/announcementRoutes');
-const galleryRoutes = require('./routes/V1/galleryRoutes');
-const consultantRoutes = require('./routes/V1/consultantScheduleRoutes');
-const jobPostingRoutes = require('./routes/V1/jobPostingRoutes');
-const jobApplicationRoutes = require('./routes/V1/jobApplicationRoutes');
-const contactUsRoutes = require('./routes/V1/contactUsRoutes');
+const routes = require('./routes');
 const errorHandler = require('./middlewares/errorHandler');
 const path = require('path');
 
@@ -96,7 +89,6 @@ app.use(
 );
 
 // ROUTES
-
 app.use(
   '/uploads/blogs',
   express.static(path.join(__dirname, 'uploads/blogs'))
@@ -110,27 +102,11 @@ app.use(
   express.static(path.join(__dirname, 'uploads/resume'))
 );
 
-app.get('/', (req, res) => {
+app.get('/hospital-api', (req, res) => {
   res.send('Hello World!');
 });
 
-app.use('/api/auth', authRoutes);
-
-// Blog routes
-app.use('/api/blogs', blogRoutes);
-
-// gallery Routes
-app.use('/api/announcement', announcementRoutes);
-
-// Notice routes
-app.use('/api/gallery', galleryRoutes);
-
-// Notice routes
-app.use('/api/consultant', consultantRoutes);
-
-app.use('/api/jobs', jobPostingRoutes);
-app.use('/api/applications', jobApplicationRoutes);
-app.use('/api/contact-us', contactUsRoutes);
+app.use('/hospital-api/api', routes);
 
 // Error Handler Middleware
 app.use(errorHandler);
