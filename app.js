@@ -102,11 +102,11 @@ app.use(
   express.static(path.join(__dirname, 'uploads/resume'))
 );
 
-app.get('/hospital-api', (req, res) => {
+app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
-app.use('/hospital-api/api', routes);
+app.use('/api', routes);
 
 // Error Handler Middleware
 app.use(errorHandler);
